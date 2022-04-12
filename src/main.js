@@ -9,7 +9,9 @@ import store from "@/store";
 import registerComonent from "@/components";
 import App from "./App.vue";
 
-const app = createApp(App);
+const app = createApp(App, {
+  titleHeight: "0.9rem",
+});
 app.use(Toast);
 app.use(router);
 app.use(store);

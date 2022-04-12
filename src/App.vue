@@ -15,6 +15,14 @@ export default {
       isRouterViewAlive: true,
     };
   },
+  props: {
+    titleHeight: String,
+  },
+  provide() {
+    return {
+      titleHeight: this.titleHeight,
+    };
+  },
   computed: {
     ...mapState(["cacheComponents"]),
   },
@@ -32,18 +40,12 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss">
 .ui-ft-30-important {
   font-size: 30px !important;
 }
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+// #app {
+// }
 #testA {
   width: 750px;
   height: 100px;

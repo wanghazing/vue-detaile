@@ -18,7 +18,7 @@
           @click="handleBack"
           v-show="showBack"
         ></tg-icon>
-        <slot name="left"></slot>
+        <slot name="header-left"></slot>
       </div>
       <h1 class="title-text" :style="titleStyle">
         {{ titleText || $route.meta.title }}
@@ -88,7 +88,6 @@ export default {
   top: 0;
   width: 100%;
   z-index: 999;
-  background-color: #fff;
 }
 .title-body {
   height: 100%;
@@ -103,6 +102,7 @@ export default {
   .title-text {
     font-size: var(--font-size-header);
     flex-grow: 1;
+    height: 100%;
   }
 }
 </style>

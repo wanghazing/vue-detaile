@@ -7,7 +7,7 @@
       class="main-container"
       :id="mainContainerId"
       :style="{
-        top: titleHeight,
+        top: header.barHeight || $root.titleHeight,
       }"
     >
       <div class="slot-container">
@@ -45,7 +45,6 @@ export default {
       isSupportRefresh: false,
       isSupportLoadmore: false,
       isSupportSwiper: false,
-      titleHeight: "",
       offsetY: 0,
       translateY: 0,
       mainContainerHeight: 0,
@@ -110,7 +109,6 @@ export default {
     },
   },
   created() {
-    this.titleHeight = "0.9rem";
     let uuid = ~~(Math.random() * 64800);
     this.mainContainerId = "mainContainer-" + uuid;
     this.isSupportRefresh = this.touchActions.indexOf("refresh") !== -1;
