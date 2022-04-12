@@ -1,0 +1,20 @@
+.theme-default {
+  --color-primary: #376efe;
+  --color-sub: #00a2ff;
+  --color-warning: #ff7d41;
+  --color-error: #ff5257;
+
+  --color-bg-primary: #fff;
+  --color-bg-sub: #f5f5f5;
+
+  --color-border-primary: #e5e5e5;
+
+  --color-text-primary: #333;
+  --color-text-sub: #666;
+  --color-text-placeholder: #999;
+
+  --font-size-header: 36px;
+  --font-size-body: 30px;
+  --font-size-tip: 24px;
+
+}

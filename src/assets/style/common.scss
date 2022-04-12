@@ -1,0 +1,53 @@
+@for $i from 1 to 8 {
+  .ui-m-#{$i * 8} {
+    margin: (8px * $i)
+  }
+  .ui-ml-#{$i} {
+    margin-left: (8px * $i)
+  }
+  .ui-mr-#{$i} {
+    margin-right: (8px * $i)
+  }
+  .ui-mlr-#{$i} {
+    margin-left: (8px * $i);
+    margin-right: (8px * $i)
+  }
+  .ui-mt-#{$i} {
+    margin-top: (8px * $i)
+  }
+  .ui-mb-#{$i} {
+    margin-bottom: (8px * $i)
+  }
+  .ui-mtb-#{$i} {
+    margin-top: (8px * $i);
+    margin-bottom: (8px * $i)
+  }
+  .ui-p-#{$i * 8} {
+    padding: (8px * $i)
+  }
+  .ui-pl-#{$i} {
+    padding-left: (8px * $i)
+  }
+  .ui-pr-#{$i} {
+    padding-right: (8px * $i)
+  }
+  .ui-plr-#{$i} {
+    padding-left: (8px * $i);
+    padding-right: (8px * $i)
+  }
+  .ui-pt-#{$i} {
+    padding-top: (8px * $i)
+  }
+  .ui-pb-#{$i} {
+    padding-bottom: (8px * $i)
+  }
+  .ui-ptb-#{$i} {
+    padding-top: (8px * $i);
+    padding-bottom: (8px * $i)
+  }
+}
+@for $i from 0 to 20 {
+  .ui-ft-#{$i * 2 + 24} {
+    font-size: (2px * $i + 24px);
+  }
+}

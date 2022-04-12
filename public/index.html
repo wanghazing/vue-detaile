@@ -1,17 +1,51 @@
 <!DOCTYPE html>
 <html lang="">
   <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <link rel="icon" href="<%= BASE_URL %>favicon.ico">
-    <title><%= htmlWebpackPlugin.options.title %></title>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1.0,user-scalable=no"
+    />
+    <link rel="icon" href="<%= BASE_URL %>favicon.ico" />
+    <script src="<%= BASE_URL %>fastclick.js"></script>
+    <title><%= VUE_APP_TITLE %></title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+    </style>
   </head>
-  <body>
+  <body style="font-size: 14px; padding-top: 0.9rem" class="theme-default">
     <noscript>
-      <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
+      <strong
+        >We're sorry but <%= VUE_APP_TITLE %> doesn't work properly without
+        JavaScript enabled. Please enable it to continue.</strong
+      >
     </noscript>
     <div id="app"></div>
     <!-- built files will be auto injected -->
+    <script>
+      (function (w, d) {
+        function resize() {
+          var ww = w.innerWidth;
+          if (ww > window.screen.width) {
+            window.requestAnimationFrame(resize);
+          } else {
+            if (ww > 720) ww = 720;
+            console.log(ww / 7.5 + "px");
+            document.documentElement.style.fontSize = ww / 7.5 + "px";
+            document.body.style.opacity = 1;
+          }
+        }
+        if (document.readyState !== "loading") {
+          resize();
+        } else {
+          document.addEventListener("DOMContentLoaded", resize);
+        }
+        window.addEventListener("resize", resize);
+      })(window, document);
+    </script>
   </body>
 </html>
