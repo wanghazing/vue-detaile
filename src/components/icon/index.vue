@@ -1,7 +1,7 @@
 <template>
   <i
     class="tg-icon"
-    :style="iconStyle || { color }"
+    :style="{ ...iconStyle }"
     :class="['tg-' + name, 'tg-icon-' + size]"
   ></i>
 </template>
@@ -11,10 +11,6 @@ export default {
   props: {
     name: String,
     iconStyle: Object,
-    color: {
-      type: String,
-      default: "#333",
-    },
     size: {
       type: String,
       default: "middle",

@@ -1,10 +1,8 @@
 <template>
   <ui-page
-    :touch-actions="['loadmore', 'refresh']"
-    @loadmore="loadmore"
+    :touch-actions="['swiper']"
     use-custom-header
     ref="page"
-    @refresh="refresh"
     :header="{
       barHeight: '1.6rem',
     }"
@@ -33,13 +31,7 @@
       </header-bar>
     </template>
     <div style="background-color: #fff">
-      <div
-        v-for="(item, idx) in dataList"
-        :key="idx"
-        style="margin-bottom: 0.24rem"
-      >
-        {{ idx }}:{{ item }}
-      </div>
+      <div @click="$router.push('list')" class="ui-m-24">点我</div>
     </div>
   </ui-page>
 </template>
@@ -51,9 +43,6 @@ export default {
   // components: { headerBar },
   data() {
     return {
-      pageNo: 1,
-      pageSize: 10,
-      dataList: [],
       activeHeaderMenu: 1,
       headerMenuList: [
         { menuId: 1, menuName: "关注" },
@@ -62,37 +51,7 @@ export default {
       ],
     };
   },
-  created() {
-    this.getDataList();
-  },
   methods: {
-    loadmore() {
-      this.pageNo++;
-      this.getDataList("loadmore", () => {
-        this.$refs.page.finishLoadMore();
-      });
-    },
-    refresh() {
-      // this.dataList = [];
-      this.pageNo = 1;
-      this.pageSize = 10;
-      this.getDataList("refresh", () => {
-        this.$refs.page.finishRefresh();
-      });
-    },
-    getDataList(flag, cb) {
-      setTimeout(() => {
-        const argv = [
-          [0, this.dataList.length],
-          [this.dataList.length, 0],
-        ][0 | (flag === "loadmore")];
-        this.dataList.splice(
-          ...argv,
-          ...Array(this.pageSize).fill(Math.random() * 9000)
-        );
-        cb && cb();
-      }, 1000);
-    },
     handleChooseHeaderMenu(menuId) {
       this.activeHeaderMenu = menuId;
     },
@@ -113,6 +72,7 @@ export default {
   align-items: center;
   justify-content: space-around;
   height: 100%;
+  width: 100%;
   .header-menu-item {
     font-size: var(--font-size-body);
     font-weight: 300;

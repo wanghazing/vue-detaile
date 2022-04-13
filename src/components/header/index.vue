@@ -15,7 +15,7 @@
           class="header-back"
           :name="iconName"
           size="large"
-          @click="handleBack"
+          @click="handleLeftClick"
           v-show="showBack"
         ></tg-icon>
         <slot name="header-left"></slot>
@@ -46,13 +46,22 @@
       </div>
     </div>
   </header>
+  <div
+    class="header-polyfill"
+    :style="{
+      height:
+        barHeight &&
+        (typeof barHeight === 'string' ? barHeight : barHeight + 'px'),
+      ...barStyle,
+    }"
+  ></div>
 </template>
 
 <script>
-import TgIcon from "@/components/icon";
+// import TgIcon from "@/components/icon";
 export default {
   name: "headerBar",
-  components: { TgIcon },
+  // components: { TgIcon },
   props: {
     barStyle: Object,
     iconStyle: Object,
@@ -74,9 +83,25 @@ export default {
     rightTitleImg: String,
     leftWidth: String,
     rightWidth: String,
+    customBack: {
+      type: Boolean,
+      default: false,
+    },
   },
   methods: {
-    handleBack() {},
+    // 点击左侧区域
+    handleLeftClick() {
+      if (this.customBack) {
+        // this.header.back(this.defaultBack);
+        this.$emit("left-click", this.defaultBack);
+      } else {
+        this.defaultBack();
+      }
+    },
+    // 默认返回
+    defaultBack() {
+      this.$router.back();
+    },
     handleRightTitleClick() {},
   },
 };
@@ -103,6 +128,10 @@ export default {
     font-size: var(--font-size-header);
     flex-grow: 1;
     height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 300;
   }
 }
 </style>

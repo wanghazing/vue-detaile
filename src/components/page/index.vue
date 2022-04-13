@@ -1,21 +1,25 @@
 <template>
   <div class="ui-page-container">
-    <header-bar v-if="!useCustomHeader" @back="header.back"></header-bar>
+    <header-bar
+      v-if="!useCustomHeader"
+      @back="handleLeftClick"
+      :bar-style="header.barStyle"
+    ></header-bar>
 
     <slot v-else name="header"></slot>
     <div
       class="main-container"
       :id="mainContainerId"
       :style="{
-        top: header.barHeight || $root.titleHeight,
+        top: top || header.barHeight || $root.titleHeight,
       }"
     >
       <div class="slot-container">
-        <div class="pulling-down">
+        <div class="pulling-down" v-show="isSupportRefresh">
           <p>{{ pullDownTipText[pullDownState] }}</p>
         </div>
         <slot></slot>
-        <div class="pulling-up">
+        <div class="pulling-up" v-show="isSupportLoadmore">
           <p>{{ pullUpTipText[pullUpState] }}</p>
         </div>
       </div>
@@ -27,9 +31,9 @@
 import BetterScroll from "@better-scroll/core";
 import PullDown from "@better-scroll/pull-down";
 import Pullup from "@better-scroll/pull-up";
+import headerBar from "../header";
 BetterScroll.use(PullDown);
 BetterScroll.use(Pullup);
-import headerBar from "../header";
 export default {
   name: "ui-page",
   components: {
@@ -37,6 +41,22 @@ export default {
   },
   data() {
     // this. = ;
+    this.pullDownTipText = Object.assign(
+      {
+        before: "下拉刷新",
+        release: "松开",
+        loading: "加载中",
+        finish: "刷新成功",
+      },
+      this.pullDownTip
+    );
+    this.pullUpTipText = Object.assign(
+      {
+        before: "下拉加载更多",
+        loading: "加载中",
+      },
+      this.pullUpTip
+    );
     return {
       uuid: "",
       scroller: null,
@@ -52,17 +72,13 @@ export default {
       overContainer: 0,
       beforePulling: false,
       pullDownState: "",
-      pullDownTipText: {
-        before: "下拉刷新",
-        release: "松开",
-        loading: "加载中",
-        finish: "刷新成功",
-      },
+      // pullDownTipText: ,
       pullUpState: "before",
       pullUpTipText: {
         before: "下拉加载更多",
         loading: "加载中",
       },
+      noMoreFlag: false,
     };
   },
   props: {
@@ -70,12 +86,16 @@ export default {
     header: {
       type: Object,
       default: () => {
-        return { back: () => {}, isSpecial: false, _isDefault: true };
+        return { barStyle: { backgroundColor: "var(--color-bg-primary)" } };
       },
     },
-    speed: {
-      type: Number,
-      default: 1,
+    pullDownTip: {
+      type: Object,
+      default: () => {},
+    },
+    pullUpTip: {
+      type: Object,
+      default: () => {},
     },
     // 使用插槽标题栏
     useCustomHeader: {
@@ -83,30 +103,21 @@ export default {
       default: false,
     },
     // 下拉最大距离
-    maxRefreshHeight: {
+    threshold: {
       type: Number,
-      default: 300,
-    },
-    // 上拉最大距离
-    maxLoadmoreHeight: {
-      type: Number,
-      default: 300,
+      default: 90,
     },
     // 触发下拉刷新距离
-    refreshListenHeight: {
+    stop: {
       type: Number,
-      default: 200,
-    },
-    // 触发上拉加载距离
-    loadmoreListenHeight: {
-      type: Number,
-      default: 200,
+      default: 40,
     },
     // 是否支持下拉刷新和上拉加载，传入refresh:支持下拉刷新，传入loadmore:支持上拉加载，swiper:不支持刷新和加载，但是有刷新和加载的效果
     touchActions: {
       type: Array,
       default: () => [],
     },
+    top: [String, Number],
   },
   created() {
     let uuid = ~~(Math.random() * 64800);
@@ -114,40 +125,78 @@ export default {
     this.isSupportRefresh = this.touchActions.indexOf("refresh") !== -1;
     this.isSupportLoadmore = this.touchActions.indexOf("loadmore") !== -1;
     this.isSupportSwiper = this.touchActions.indexOf("swiper") !== -1;
-    console.log(this.isSupportLoadmore);
+    if (this.isSupportSwiper) {
+      this.isSupportRefresh = this.isSupportLoadmore = false;
+    }
   },
   mounted() {
-    this.uiScroller = new BetterScroll("#" + this.mainContainerId, {
-      useTransition: false,
-      pullDownRefresh: {
-        threshold: 90,
-        stop: 40,
-      },
-      pullUpLoad: {
-        threshold: 90,
-        stop: 40,
-      },
-    });
-    this.initPullUp();
-    this.initPullDown();
+    if (this.touchActions.length > 0) {
+      this.initScroll();
+    }
     // this.APP_PAGE_ROOT.activePage = this;
     // this.translateY = this.mainContainerHeight - this.slotContainerHeight;
     // });
   },
   methods: {
+    // 返回
+    handleLeftClick() {
+      if (typeof this.header.handleLeftClick === "function") {
+        this.header.handleLeftClick(this.defaultBack);
+      } else {
+        this.defaultBack();
+      }
+    },
+    // 默认返回
+    defaultBack() {
+      this.$router.back();
+    },
+    // 初始化页面
+    initScroll() {
+      let pullDownRefresh = {
+          threshold: this.threshold,
+          stop: this.stop,
+        },
+        pullUpLoad = {
+          threshold: this.threshold,
+          stop: this.stop,
+        };
+      this.uiScroller = new BetterScroll("#" + this.mainContainerId, {
+        useTransition: false,
+        bindToWrapper: true,
+        ...(this.isSupportRefresh || this.isSupportSwiper
+          ? { pullDownRefresh }
+          : {}),
+        ...(this.isSupportLoadmore || this.isSupportSwiper
+          ? { pullUpLoad }
+          : {}),
+      });
+      if (this.isSupportRefresh || this.isSupportSwiper) {
+        this.initPullUp();
+      }
+      if (this.isSupportLoadmore || this.isSupportSwiper) {
+        this.initPullDown();
+      }
+    },
     // 初始化上拉加载
     initPullUp() {
       this.uiScroller.on("pullingUp", () => {
-        this.pullUpState = "loading";
-        this.$emit("loadmore");
+        if (this.isSupportLoadmore) {
+          this.pullUpState = "loading";
+          this.$emit("loadmore");
+        }
       });
     },
     // 初始化下拉刷新
     initPullDown() {
       this.uiScroller.on("pullingDown", () => {
-        this.pullDownState = "loading";
-        this.$emit("refresh");
-        // this.uiScroller.refresh();
+        if (this.isSupportRefresh) {
+          this.pullDownState = "loading";
+          this.$emit("refresh");
+        } else {
+          setTimeout(() => {
+            this.finishRefresh();
+          }, 300);
+        }
       });
       this.uiScroller.on("scrollEnd", () => {
         console.log("scrollEnd");
@@ -159,19 +208,6 @@ export default {
       this.uiScroller.on("leaveThreshold", () => {
         this.pullDownState = "release";
       });
-    },
-    rem2px(str) {
-      return Number(String(str).replace("rem", "")) * 100;
-    },
-    handlePullingDown() {
-      // return new Promise((resolve) => {
-      //   this.$emit("refresh", () => {
-      //     setTimeout(() => {
-      //       this.pullDownState = "finish";
-      //       resolve();
-      //     }, 4000);
-      //   });
-      // });
     },
     finishRefresh() {
       this.pullDownState = "finish";
@@ -202,6 +238,7 @@ export default {
   left: 0;
   overflow: scroll;
   -webkit-overflow-scrolling: touch;
+  background-color: var(--color-bg-sub);
 }
 .main-container {
   position: absolute;
@@ -228,10 +265,15 @@ export default {
 .pulling-down {
   position: absolute;
   width: 100%;
-  padding: 20px;
+  /* padding: 20px; */
   box-sizing: border-box;
   transform: translateY(-100%) translateZ(0);
   text-align: center;
+  color: #999;
+}
+.pulling-up {
+  text-align: center;
+  padding: 20px;
   color: #999;
 }
 .loadmore {

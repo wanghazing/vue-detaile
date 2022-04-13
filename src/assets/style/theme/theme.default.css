@@ -6,15 +6,23 @@
 
   --color-bg-primary: #fff;
   --color-bg-sub: #f5f5f5;
+  --color-bg-disabled: #c5cad5;
 
   --color-border-primary: #e5e5e5;
 
   --color-text-primary: #333;
   --color-text-sub: #666;
-  --color-text-placeholder: #999;
+  --color-text-primary: #333;
+  --color-text-reverse: #fff;
 
-  --font-size-header: 36px;
+  --font-size-header-lg: 48px;
+  --font-size-header: 40px;
+  --font-size-header-sm: 36px;
+  --font-size-body-lg: 32px;
   --font-size-body: 30px;
+  --font-size-body-sm: 28px;
+  --font-size-tip-lg: 26px;
   --font-size-tip: 24px;
+  --font-size-tip-sm: 20px;
 
 }

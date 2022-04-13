@@ -1,5 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 
+import demo from "./demo";
+
 import Home from "@/views/home";
 const routes = [
   {
@@ -14,5 +16,6 @@ const routes = [
       title: "",
     },
   },
+  ...demo,
 ];
 export default createRouter({ routes, history: createWebHistory() });

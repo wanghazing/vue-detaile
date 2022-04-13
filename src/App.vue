@@ -1,8 +1,10 @@
 <template>
   <router-view v-slot="{ Component }">
-    <keep-alive :include="cacheComponents">
-      <component :is="Component" />
-    </keep-alive>
+    <transition name="slide">
+      <keep-alive :include="cacheComponents">
+        <component :is="Component" />
+      </keep-alive>
+    </transition>
   </router-view>
 </template>
 
@@ -49,5 +51,23 @@ export default {
 #testA {
   width: 750px;
   height: 100px;
+}
+/* 进入的起点、离开的终点 */
+.slide-enter {
+  transform: translateY(40%);
+  opacity: 0;
+}
+.slide-leave-to {
+  opacity: 0;
+}
+.slide-enter-active,
+.slide-leave-active {
+  transition: all 0.5s ease-out;
+}
+/* 进入的终点、离开的起点 */
+.slide-enter-to,
+.slide-leave {
+  transform: translateY(0);
+  opacity: 1;
 }
 </style>

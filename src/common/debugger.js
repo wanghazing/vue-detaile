@@ -1,5 +1,5 @@
 console.log(process.env.NODE_ENV);
-if (process.env.NODE_ENV === "development") {
+if (process.env.NODE_ENV !== "development") {
   var script = document.createElement("script");
   script.type = "text/javascript";
 
