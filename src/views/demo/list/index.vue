@@ -11,7 +11,9 @@
       <header-bar
         :bar-style="{ backgroundColor: 'var(--color-bg-primary)' }"
       ></header-bar>
-      <ui-filter :settings="settings" @filter="handleFilter"></ui-filter>
+      <ui-filter :settings="settings" @filter="handleFilter" v-slot="attr">
+        <span>{{ attr }}</span>
+      </ui-filter>
     </template>
     <div class="page-demo-list">
       <div class="ui-mb-32" v-for="item in dataList" :key="item">
@@ -47,11 +49,26 @@ export default {
           label: "筛选2",
           icon: "xia4",
           multiple: true,
+          deep: true,
           rotate: true,
           options: [...Array(14).keys()].map((idx) => ({
             value: "" + (idx + 1),
-            label: `选项2-${idx + 1}`,
+            label: `类别-${idx + 1}`,
             selected: false,
+            options: [...Array((Math.random() * 10) >> 0).keys()].map(
+              (jdx) => ({
+                value: "" + (idx + 1) + "" + (jdx + 1),
+                label: `类别-${idx + 1}-${jdx + 1}`,
+                selected: false,
+                options: [...Array((Math.random() * 10) >> 0).keys()].map(
+                  (kdx) => ({
+                    value: "" + (idx + 1) + "" + (jdx + 1) + "" + (kdx + 1),
+                    label: `类别-${idx + 1}-${jdx + 1}-${kdx + 1}`,
+                    selected: false,
+                  })
+                ),
+              })
+            ),
           })),
         },
       ],
