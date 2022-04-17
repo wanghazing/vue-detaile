@@ -13,14 +13,17 @@
           size="small"
           color="var(--color-text-sub)"
           :icon-style="{
-            transform: filterActiveFlag === field.key ? 'rotateZ(180deg)' : '',
+            transform:
+              filterActiveFlag === field.key && field.rotate
+                ? 'rotateZ(180deg)'
+                : '',
           }"
         ></tg-icon>
       </div>
     </div>
     <div
       class="filter-option-container"
-      :style="{ top: '0.8rem' }"
+      :style="{ top: '1.7rem' }"
       v-if="filterActiveFlag && !activeFilter.deep"
       @click="closeOptionPanel"
     >
@@ -36,29 +39,26 @@
             class="option-box"
             v-for="option in activeFilter.options"
             :key="option.value"
-            @click="handleSelectOption(option, activeFilter)"
+            @click.stop="handleSelectOption(option.value)"
           >
-            <div class="select-box" v-if="option.selected">
+            <div
+              class="select-box"
+              v-if="activeFilter.selectedValue.includes(option.value)"
+            >
               <tg-icon name="duihao2" class="select-box-icon"></tg-icon>
             </div>
             <p class="option-label">{{ option.label }}</p>
           </div>
         </div>
         <div class="multiple-select-box" v-if="activeFilter.multiple">
-          <div class="reset-btn" @click="handleReset(activeFilter)">重置</div>
-          <div
-            class="confirm-btn"
-            :class="{ 'disabled-btn': !isCanSubmit }"
-            @click="handleConfirmMultiple"
-          >
-            确定
-          </div>
+          <div class="reset-btn" @click.stop="handleReset">重置</div>
+          <div class="confirm-btn" @click="handleConfirm">确定</div>
         </div>
       </div>
     </div>
     <div
       class="advance-filter-container"
-      :style="{ top: '0.8rem' }"
+      :style="{ top: '1.7rem' }"
       @click="closeOptionPanel"
       v-if="filterActiveFlag && activeFilter.deep"
     >
@@ -104,12 +104,13 @@
               <div class="child-option-list">
                 <div
                   class="child-option-box"
-                  v-for="(optionL3, ldx) in optionL2.options"
+                  v-for="optionL3 in optionL2.options"
                   :key="optionL3.value"
-                  @click.stop="
-                    handleSelectOptionDeep(activeOption, optionL2, ldx)
-                  "
-                  :class="{ 'child-option-l3-actived': optionL3.selected }"
+                  @click.stop="handleSelectOptionDeep(optionL3.value)"
+                  :class="{
+                    'child-option-l3-actived':
+                      activeFilter.selectedValue.includes(optionL3.value),
+                  }"
                 >
                   {{ optionL3.label }}
                 </div>
@@ -118,14 +119,8 @@
           </div>
         </div>
         <div class="multiple-select-box">
-          <div class="reset-btn" @click.stop="handleResetDeep">重置</div>
-          <div
-            class="confirm-btn"
-            :class="{ 'disabled-btn': !isCanSubmit }"
-            @click.stop="handleConfirmDeep"
-          >
-            确定
-          </div>
+          <div class="reset-btn" @click.stop="handleReset">重置</div>
+          <div class="confirm-btn" @click.stop="handleConfirm">确定</div>
         </div>
       </div>
     </div>
@@ -133,20 +128,6 @@
 </template>
 
 <script>
-function deepReset(list) {
-  return list.reduce((pv, cv) => {
-    if (cv.options && cv.options.length) {
-      // return pv.concat(deepReset(cv.options));
-      return pv.concat({ ...cv, options: deepReset(cv.options) });
-    } else if (cv.options) {
-      return pv.concat({ ...cv });
-    }
-    if (cv.selected) {
-      return pv.concat({ ...cv, selected: false });
-    }
-    return pv.concat({ ...cv });
-  }, []);
-}
 export default {
   name: "ui-filter",
   data() {
@@ -155,6 +136,7 @@ export default {
       showOptionList: false,
       activeFilter: {},
       activeOption: {},
+      selectdOptionsDeep: [],
     };
   },
   props: {
@@ -164,15 +146,10 @@ export default {
     },
   },
   created() {
-    this.filterFieldList = this.settings;
-  },
-  computed: {
-    isCanSubmit() {
-      if (!this.activeFilter || !this.activeFilter.key) {
-        return false;
-      }
-      return this.activeFilter.options.some(({ selected }) => selected);
-    },
+    this.filterFieldList = this.settings.map((set) => ({
+      ...set,
+      selectedValue: [],
+    }));
   },
   watch: {
     filterActiveFlag(val) {
@@ -180,92 +157,58 @@ export default {
         this.showOptionList = val;
       }, 0);
     },
-    // value(val) {
-
-    //   this.filterFieldList.forEach((field, idx) => {
-    //     if (Array.isArray(val[field.key]) && val[field.key].length > 0) {
-    //       let options = field.options.reduce((pv,cv) => {
-    //         return pv.concat({ ...cv, selected: val[field.key].indexOf(cv.value) })
-    //       }, [])
-    //       this.filterFieldList.splice(idx, 1, { ...field, options })
-    //     } else if (val[field.key]) {
-    //       let oIdx = field.options.find(({value}) => value === val[field.key]);
-    //       field.options[oIdx].selected = true
-    //       this.filterFieldList.splice(idx, 1, field)
-    //     }
-    //   })
-    // }
   },
   methods: {
     handleActiveFilter(field) {
       this.filterActiveFlag =
         field.key === this.filterActiveFlag ? "" : field.key;
       this.activeFilter = field;
-    },
-    handleSelectOption(option, field) {
-      // 多选
-      let fieldIdx = this.filterFieldList.findIndex(
-        ({ key }) => key === field.key
-      );
-      let optionIdx = field.options.findIndex(
-        ({ value }) => value === option.value
-      );
-      let options = this.filterFieldList[fieldIdx].options;
-      if (!field.multiple) {
-        // 单选时将其他选项设为false
-        options.forEach((o) => {
-          o.selected = false;
-        });
+      if (field.deep && !this.activeOption.value) {
+        this.handleActiveOption(
+          field.options.filter(({ options }) => options.length > 0)[0]
+        );
       }
-      options.splice(optionIdx, 1, {
-        ...options[optionIdx],
-        selected: !options[optionIdx].selected,
-      });
-      this.filterFieldList.splice(fieldIdx, 1, {
-        ...this.filterFieldList[fieldIdx],
-        options,
-      });
-      // this.$set(this.filterFieldList, fieldIdx, );
-      if (!field.multiple) {
+    },
+    handleSelectOption(value) {
+      let idx = this.activeFilter.selectedValue.findIndex(
+        (val) => val === value
+      );
+      if (this.activeFilter.multiple) {
+        if (idx === -1) {
+          this.activeFilter.selectedValue.push(value);
+        } else {
+          this.activeFilter.selectedValue.splice(idx, 1);
+        }
+      } else {
+        if (idx === -1) {
+          this.activeFilter.selectedValue = [value];
+        } else {
+          this.activeFilter.selectedValue = [];
+        }
         this.$emit("filter", {
           value: this.getValue(),
         });
-        this.handleActiveFilter(field);
+        this.handleActiveFilter(this.activeFilter);
       }
     },
-    handleConfirmMultiple() {
+    handleConfirm() {
       this.$emit("filter", {
         value: this.getValue(),
       });
       this.handleActiveFilter(this.activeFilter);
     },
-    handleReset(field) {
+    handleReset() {
       // 多选
-      let setFalseOptions = field.options.filter(({ selected }) => selected);
-      setFalseOptions.forEach((option) => {
-        this.handleSelectOption(option, field);
-      });
+      this.activeFilter.selectedValue = [];
     },
     getValue() {
-      return this.filterFieldList.reduce((pv, cv) => {
-        // if (cv.options.)
-        if (cv.multiple) {
-          let selectdOptions = cv.options.filter(({ selected }) => selected);
-          if (selectdOptions.length > 0) {
-            Object.assign(pv, {
-              [cv.key]: selectdOptions.map(({ value }) => value),
-            });
-          }
-        } else {
-          let selectdOption = cv.options.find(({ selected }) => selected);
-          if (selectdOption) {
-            Object.assign(pv, {
-              [cv.key]: selectdOption.value,
-            });
-          }
+      let result = {};
+      this.filterFieldList.forEach((field) => {
+        if (field.selectedValue.length > 0) {
+          result[field.key] = field.selectedValue;
         }
-        return pv;
-      }, {});
+      });
+      return result;
     },
     closeOptionPanel() {
       this.filterActiveFlag = "";
@@ -273,36 +216,16 @@ export default {
     handleActiveOption(option) {
       this.activeOption = option;
     },
-    handleSelectOptionDeep(optionL1, optionL2, ldx) {
-      let idx = this.filterFieldList.findIndex(
-        ({ key }) => key === this.activeFilter.key
+    handleSelectOptionDeep(value) {
+      let idx = this.activeFilter.selectedValue.findIndex(
+        (val) => val === value
       );
-      let jdx = this.activeFilter.options.findIndex(
-        ({ value }) => value === optionL1.value
-      );
-      let kdx = this.activeFilter.options[jdx].options.findIndex(
-        ({ value }) => value === optionL2.value
-      );
-      let activeFilter = { ...this.activeFilter };
-      activeFilter.options[jdx].options[kdx].options[ldx].selected = true;
-      this.filterFieldList.splice(idx, 1, activeFilter);
+      if (idx === -1) {
+        this.activeFilter.selectedValue.push(value);
+      } else {
+        this.activeFilter.selectedValue.splice(idx, 1);
+      }
     },
-    handleResetDeep() {
-      this.activeFilter.options = deepReset(this.activeFilter.options);
-      let idx = this.filterFieldList.findIndex(
-        ({ key }) => key === this.activeFilter.key
-      );
-      let activeFilter = { ...this.activeFilter };
-      let activeOptionIdx = this.activeFilter.options.findIndex(
-        ({ value }) => value === this.activeOption.value
-      );
-      // this.activeFilter.options
-      // this.activeOption =
-      this.filterFieldList.splice(idx, 1, activeFilter);
-      this.activeFilter = this.filterFieldList[idx];
-      this.activeOption = this.activeFilter.options[activeOptionIdx];
-    },
-    handleConfirmDeep() {},
   },
 };
 </script>
@@ -311,7 +234,6 @@ export default {
 .ui-filter {
   background-color: var(--color-bg-primary);
   position: relative;
-  height: calc(100% - 90px);
   .filter-bar {
     height: 80px;
     display: flex;
@@ -340,7 +262,7 @@ export default {
   }
   .filter-option-container,
   .advance-filter-container {
-    position: absolute;
+    position: fixed;
     z-index: 1999;
     left: 0;
     right: 0;
@@ -415,7 +337,7 @@ export default {
           flex-wrap: wrap;
           align-items: center;
           .child-option-box {
-            max-width: 160px;
+            max-width: 400px;
             height: 60px;
             padding: 0 16px;
             border-radius: 30px;
@@ -423,9 +345,12 @@ export default {
             text-align: center;
             color: var(--color-text-sub);
             font-size: var(--font-size-tip);
-            background-color: #e3e3e3;
+            background-color: #e9e9e9;
             margin-right: 16px;
             margin-bottom: 16px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
           }
           .child-option-l3-actived {
             background-color: var(--color-primary);

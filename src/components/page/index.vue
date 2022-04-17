@@ -4,14 +4,26 @@
       v-if="!useCustomHeader"
       @back="handleLeftClick"
       :bar-style="header.barStyle"
+      :iconStyle="header.iconStyle"
+      :iconName="header.iconName"
+      :showBack="header.showBack"
+      :barHeight="header.barHeight"
+      :titleText="header.titleText"
+      :titleStyle="header.titleStyle"
+      :rightTitleText="header.rightTitleText"
+      :rightTitleImg="header.rightTitleImg"
+      :leftWidth="header.leftWidth"
+      :rightWidth="header.rightWidth"
+      :useCustomTitleText="header.useCustomTitleText"
     ></header-bar>
 
-    <slot v-else name="header"></slot>
+    <slot v-else name="header-bar"></slot>
     <div
       class="main-container"
       :id="mainContainerId"
       :style="{
         top: top || header.barHeight || $root.titleHeight,
+        overflow: touchActions.length > 0 ? '' : 'scroll',
       }"
     >
       <div class="slot-container">
@@ -86,7 +98,7 @@ export default {
     header: {
       type: Object,
       default: () => {
-        return { barStyle: { backgroundColor: "var(--color-bg-primary)" } };
+        return {};
       },
     },
     pullDownTip: {
@@ -105,12 +117,12 @@ export default {
     // 下拉最大距离
     threshold: {
       type: Number,
-      default: 90,
+      default: 180,
     },
     // 触发下拉刷新距离
     stop: {
       type: Number,
-      default: 40,
+      default: 80,
     },
     // 是否支持下拉刷新和上拉加载，传入refresh:支持下拉刷新，传入loadmore:支持上拉加载，swiper:不支持刷新和加载，但是有刷新和加载的效果
     touchActions: {
@@ -263,6 +275,7 @@ export default {
   color: #999999;
 }
 .pulling-down {
+  background-color: transparent;
   position: absolute;
   width: 100%;
   /* padding: 20px; */
@@ -272,6 +285,7 @@ export default {
   color: #999;
 }
 .pulling-up {
+  background-color: transparent;
   text-align: center;
   padding: 20px;
   color: #999;
@@ -287,5 +301,6 @@ export default {
   justify-content: center;
   font-size: 30px;
   color: #999999;
+  background-color: transparent;
 }
 </style>

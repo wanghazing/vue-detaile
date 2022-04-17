@@ -46,6 +46,10 @@ export default {
 .ui-ft-30-important {
   font-size: 30px !important;
 }
+html,
+body {
+  color: var(--color-bg-sub);
+}
 #app {
   color: var(--color-text-primary);
   border-color: var(--color-border-light);

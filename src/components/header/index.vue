@@ -21,8 +21,8 @@
         <slot name="header-left"></slot>
       </div>
       <h1 class="title-text" :style="titleStyle">
-        {{ titleText || $route.meta.title }}
-        <slot></slot>
+        <slot v-if="useCustomTitleText"></slot>
+        <span v-else>{{ titleText || $route.meta.title }}</span>
       </h1>
       <div class="header-right" :style="{ width: rightWidth }">
         <h3
@@ -40,8 +40,8 @@
           srcset=""
           @click="handleRightTitleClick"
         />
-        <h3 class="header-right-text">
-          <slot name="right"></slot>
+        <h3 v-else class="header-right-text">
+          <slot name="header-right"></slot>
         </h3>
       </div>
     </div>
@@ -76,6 +76,10 @@ export default {
     barHeight: {
       type: [String, Number],
       default: "0.9rem",
+    },
+    useCustomTitleText: {
+      type: Boolean,
+      default: false,
     },
     titleText: String,
     titleStyle: Object,
@@ -113,6 +117,7 @@ export default {
   top: 0;
   width: 100%;
   z-index: 999;
+  background-color: var(--color-bg-primary);
 }
 .title-body {
   height: 100%;
@@ -123,6 +128,7 @@ export default {
   .header-left,
   .header-right {
     width: 100px;
+    text-align: center;
   }
   .title-text {
     font-size: var(--font-size-header);
@@ -132,6 +138,10 @@ export default {
     align-items: center;
     justify-content: center;
     font-weight: 300;
+  }
+  .header-left-text,
+  .header-right-text {
+    text-align: center;
   }
 }
 </style>

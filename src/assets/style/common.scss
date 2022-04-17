@@ -1,47 +1,47 @@
-@for $i from 1 to 8 {
+@for $i from 1 to 9 {
   .ui-m-#{$i * 8} {
     margin: (8px * $i)
   }
-  .ui-ml-#{$i} {
+  .ui-ml-#{$i * 8} {
     margin-left: (8px * $i)
   }
-  .ui-mr-#{$i} {
+  .ui-mr-#{$i * 8} {
     margin-right: (8px * $i)
   }
-  .ui-mlr-#{$i} {
+  .ui-mlr-#{$i * 8} {
     margin-left: (8px * $i);
     margin-right: (8px * $i)
   }
-  .ui-mt-#{$i} {
+  .ui-mt-#{$i * 8} {
     margin-top: (8px * $i)
   }
-  .ui-mb-#{$i} {
+  .ui-mb-#{$i * 8} {
     margin-bottom: (8px * $i)
   }
-  .ui-mtb-#{$i} {
+  .ui-mtb-#{$i * 8} {
     margin-top: (8px * $i);
     margin-bottom: (8px * $i)
   }
   .ui-p-#{$i * 8} {
     padding: (8px * $i)
   }
-  .ui-pl-#{$i} {
+  .ui-pl-#{$i * 8} {
     padding-left: (8px * $i)
   }
-  .ui-pr-#{$i} {
+  .ui-pr-#{$i * 8} {
     padding-right: (8px * $i)
   }
-  .ui-plr-#{$i} {
+  .ui-plr-#{$i * 8} {
     padding-left: (8px * $i);
     padding-right: (8px * $i)
   }
-  .ui-pt-#{$i} {
+  .ui-pt-#{$i * 8} {
     padding-top: (8px * $i)
   }
-  .ui-pb-#{$i} {
+  .ui-pb-#{$i * 8} {
     padding-bottom: (8px * $i)
   }
-  .ui-ptb-#{$i} {
+  .ui-ptb-#{$i * 8} {
     padding-top: (8px * $i);
     padding-bottom: (8px * $i)
   }

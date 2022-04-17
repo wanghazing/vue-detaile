@@ -7,8 +7,13 @@
       barHeight: '1.6rem',
     }"
   >
-    <template v-slot:header>
-      <header-bar bar-height="1.6rem" :show-back="false">
+    <template v-slot:header-bar>
+      <header-bar
+        bar-height="1.6rem"
+        :show-back="false"
+        use-custom-title-text
+        :bar-style="{ backgroundColor: 'transparent' }"
+      >
         <template v-slot:header-left>
           <img
             src="@/assets/images/love.png"
@@ -28,6 +33,17 @@
             {{ menu.menuName }}
           </div>
         </div>
+        <template v-slot:header-right>
+          <tg-icon
+            name="sousuo2"
+            size="large"
+            :iconStyle="{
+              fontSize: '0.48rem',
+              color: 'var(--color-text-sub)',
+            }"
+            @click="$router.push('/search')"
+          ></tg-icon>
+        </template>
       </header-bar>
     </template>
     <div style="background-color: #fff">
