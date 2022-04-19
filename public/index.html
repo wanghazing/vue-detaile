@@ -17,7 +17,7 @@
       }
     </style>
   </head>
-  <body style="font-size: 14px; padding-top: 0.9rem" class="theme-default">
+  <body style="font-size: 14px; padding-top: 0.9rem" class="theme-dark">
     <noscript>
       <strong
         >We're sorry but <%= VUE_APP_TITLE %> doesn't work properly without
@@ -34,7 +34,6 @@
             window.requestAnimationFrame(resize);
           } else {
             if (ww > 720) ww = 720;
-            console.log(ww / 7.5 + "px");
             document.documentElement.style.fontSize = ww / 7.5 + "px";
             document.body.style.opacity = 1;
           }

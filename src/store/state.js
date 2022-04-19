@@ -3,5 +3,6 @@ export default function () {
     cacheComponents: [],
     searchHistory: [],
     searchHistoryMaxLength: 3,
+    themeList: [],
   };
 }

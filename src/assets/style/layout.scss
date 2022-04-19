@@ -1,4 +1,5 @@
-html, body {
-  color: var(--font-size-body);
-  background-color: var(--color-bg-sub);
+html, body, div, input, textarea, p, h1, h2, h3, h4, h5, h6, header, section, span, img, select, form, option, button {
+  color: var(--text-color-primary);
+  font-size: var(--font-size-body);
+  // background-color: var(--color-bg-primary);
 }

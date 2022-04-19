@@ -46,12 +46,6 @@
 <script>
 import { ref, onMounted } from "vue";
 
-function getRandomCnWord(minLength = 1, maxLength = 20) {
-  let length = ~~(Math.random() * (maxLength - minLength)) + minLength;
-  return [...Array(length).keys()]
-    .map(() => String.fromCharCode(~~(Math.random() * 7000 + 19000)))
-    .join("");
-}
 export default {
   name: "demo-list",
   data() {
@@ -79,10 +73,10 @@ export default {
             return {
               id: pageSize.value * pageNo.value + idx,
               icon: "p" + ~~(Math.random() * 6 + 1),
-              title: getRandomCnWord(3, 5),
-              subTitle: getRandomCnWord(4, 8),
-              content1: getRandomCnWord(4, 8),
-              content2: getRandomCnWord(4, 8),
+              title: window.getRandomCnWord(3, 5),
+              subTitle: window.getRandomCnWord(4, 8),
+              content1: window.getRandomCnWord(4, 8),
+              content2: window.getRandomCnWord(4, 8),
             };
           })
         );

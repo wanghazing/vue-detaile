@@ -1,7 +1,9 @@
 export default {
+  // 初始化缓存页面
   initCacheComponents(state, list) {
     state.cacheComponents = [...new Set(list)];
   },
+  // 新增历史记录
   addSearchHistory(state, text) {
     let idx = state.searchHistory.findIndex((item) => item === text);
     if (idx !== -1) {
@@ -18,6 +20,7 @@ export default {
     }
     state.searchHistory.unshift(text);
   },
+  // 清空历史记录
   clearSearhHistory(state) {
     state.searchHistory.splice(0, state.searchHistory.length);
   },

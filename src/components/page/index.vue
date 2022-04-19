@@ -23,14 +23,22 @@
       :id="mainContainerId"
       :style="{
         top: top || header.barHeight || $root.titleHeight,
+        bottom: typeof bottom === 'number' ? bottom + 'px' : bottom,
         overflow: touchActions.length > 0 ? '' : 'scroll',
       }"
     >
-      <div class="slot-container">
+      <div
+        class="slot-container"
+        :style="{
+          marginBottom: typeof bottom === 'number' ? bottom + 'px' : bottom,
+        }"
+      >
         <div class="pulling-down" v-show="isSupportRefresh">
           <p>{{ pullDownTipText[pullDownState] }}</p>
         </div>
-        <slot></slot>
+        <div>
+          <slot></slot>
+        </div>
         <div class="pulling-up" v-show="isSupportLoadmore">
           <p>{{ pullUpTipText[pullUpState] }}</p>
         </div>
@@ -130,6 +138,7 @@ export default {
       default: () => [],
     },
     top: [String, Number],
+    bottom: [String, Number],
   },
   created() {
     let uuid = ~~(Math.random() * 64800);
@@ -175,6 +184,7 @@ export default {
       this.uiScroller = new BetterScroll("#" + this.mainContainerId, {
         useTransition: false,
         bindToWrapper: true,
+        click: true,
         ...(this.isSupportRefresh || this.isSupportSwiper
           ? { pullDownRefresh }
           : {}),
@@ -236,6 +246,9 @@ export default {
         this.uiScroller.refresh();
       });
     },
+    refreshScroll() {
+      this.uiScroller.refresh();
+    },
     // viewappear()
   },
 };
@@ -275,6 +288,8 @@ export default {
   color: #999999;
 }
 .pulling-down {
+  height: 60px;
+  line-height: 60px;
   background-color: transparent;
   position: absolute;
   width: 100%;
@@ -285,6 +300,8 @@ export default {
   color: #999;
 }
 .pulling-up {
+  height: 60px;
+  line-height: 60px;
   background-color: transparent;
   text-align: center;
   padding: 20px;
