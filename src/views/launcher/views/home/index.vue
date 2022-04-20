@@ -1,8 +1,7 @@
 <template>
   <ui-page
-    :touch-actions="['refresh', 'loadmore']"
+    :touch-actions="['refresh', 'swiper']"
     use-custom-header
-    @loadmore="loadmore"
     @refresh="refresh"
     ref="page"
     :header="{
@@ -53,54 +52,19 @@
       </header-bar>
     </template>
     <slider-ad :data="sliderData"></slider-ad>
-    <!-- <div style="background-color: #fff">
-      <div v-for="num in 200" :key="num">{{ num }}</div>
-    </div> -->
-    <div class="article-list">
-      <div
-        class="article-list-item"
-        v-for="data in dataList"
-        :key="data.articleId"
-        @click="goDetail"
-      >
-        <div class="article-title">{{ data.title }}</div>
-        <div class="article-body">
-          <div class="article-body-left">
-            <div class="article-releaser">
-              <img
-                :src="require('@/assets/images/logo/' + data.icon + '.png')"
-                alt=""
-                srcset=""
-              />
-              <span>{{ data.releaser }}</span>
-            </div>
-            <div class="article-content">{{ data.content }}</div>
-          </div>
-          <div class="article-body-poster">
-            <img
-              alt=""
-              :src="require('@/assets/images/poster/' + data.poster + '.jpeg')"
-              srcset=""
-            />
-          </div>
-        </div>
-        <div class="article-footer">
-          <div class="article-data">
-            {{ data.follow }}赞同·{{ data.view }}浏览
-          </div>
-        </div>
-      </div>
-    </div>
+    <standard-menu :data="standardMenuData"></standard-menu>
+    <single-row-menu :data="singleRowMenuData"></single-row-menu>
   </ui-page>
 </template>
 
 <script>
-import { ref, onMounted } from "vue";
 // import headerBar from "@/components/header";
 import SliderAd from "../../components/slider";
+import StandardMenu from "../../components/menu/standardMenu";
+import SingleRowMenu from "../../components/menu/singleRowMenu";
 export default {
   name: "homePage",
-  components: { SliderAd },
+  components: { SliderAd, StandardMenu, SingleRowMenu },
   data() {
     return {
       activeHeaderMenu: 1,
@@ -123,64 +87,73 @@ export default {
           borderRadius: "0.24rem",
         },
       },
-    };
-  },
-  setup() {
-    const pageNo = ref(1);
-    const pageSize = ref(10);
-    const dataList = ref([]);
-    const getDataList = (flag, cb) => {
-      setTimeout(() => {
-        const argv = [
-          [0, dataList.value.length],
-          [dataList.value.length, 0],
-        ][0 | (flag === "loadmore")];
-        console.log(pageSize.value, pageNo.value);
-        dataList.value.splice(
-          ...argv,
-          ...[...Array(pageSize.value).keys()].map((idx) => {
-            return {
-              id: pageSize.value * pageNo.value + idx,
-              icon: "logo" + ~~(Math.random() * 10 + 1),
-              poster: "post" + ~~(Math.random() * 8 + 1),
-              title: window.getRandomCnWord(10, 25),
-              releaser: window.getRandomCnWord(2, 8),
-              content: window.getRandomCnWord(20, 80),
-              content2: window.getRandomCnWord(4, 8),
-              follow: ~~(Math.random() * 300),
-              view: ~~(Math.random() * 4000),
-            };
-          })
-        );
-        cb && cb();
-      }, 1000);
-    };
-    onMounted(getDataList);
-    return {
-      pageNo,
-      pageSize,
-      dataList,
-      getDataList,
+      standardMenuData: {
+        style: {
+          marginLR: ".3rem",
+          marginB: ".3rem",
+          width: "6.9rem",
+        },
+        menuStyle: {
+          height: "1.25rem",
+          iconWidth: ".48rem",
+          iconHeight: ".48rem",
+          iconMarginB: ".16rem",
+          fontSize: ".3rem",
+          fontWeight: "bold",
+          color: "var(--color-text-primary)",
+          menuMarginB: ".24rem",
+        },
+        column: 5,
+        menuList: [
+          { menuId: 1, title: "菜单1", icon: "menu1.png" },
+          { menuId: 2, title: "菜单2", icon: "menu2.png" },
+          { menuId: 3, title: "菜单3", icon: "menu3.png" },
+          { menuId: 4, title: "菜单4", icon: "menu4.png" },
+          { menuId: 5, title: "菜单5", icon: "menu5.png" },
+          { menuId: 6, title: "菜单6", icon: "menu6.png" },
+          { menuId: 7, title: "菜单7", icon: "menu7.png" },
+          { menuId: 8, title: "菜单8", icon: "menu8.png" },
+          { menuId: 9, title: "菜单9", icon: "menu9.png" },
+          { menuId: 10, title: "菜单10", icon: "menu10.png" },
+        ],
+      },
+      singleRowMenuData: {
+        title: "在线课程",
+        subTitle: "更多",
+        style: {
+          marginLR: ".3rem",
+          marginB: ".3rem",
+          width: "6.9rem",
+        },
+        menuStyle: {
+          padding: ".32rem",
+          height: "2rem",
+          width: "2rem",
+          iconWidth: ".96rem",
+          iconHeight: ".96rem",
+          iconMarginB: ".16rem",
+          fontSize: ".3rem",
+          fontWeight: "bold",
+          color: "var(--color-text-primary)",
+          menuMarginB: ".24rem",
+        },
+        menuList: [
+          { menuId: 1, title: "菜单1", icon: "menu21.png" },
+          { menuId: 2, title: "菜单2", icon: "menu22.png" },
+          { menuId: 3, title: "菜单3", icon: "menu23.png" },
+          { menuId: 4, title: "菜单4", icon: "menu24.png" },
+          { menuId: 5, title: "菜单5", icon: "menu25.png" },
+          { menuId: 6, title: "菜单6", icon: "menu26.png" },
+          { menuId: 7, title: "菜单7", icon: "menu27.png" },
+        ],
+      },
     };
   },
   // mounted() {
   //   this.getDataList();
   // },
   methods: {
-    loadmore() {
-      this.pageNo++;
-      this.getDataList("loadmore", () => {
-        this.$refs.page.finishLoadMore();
-      });
-    },
-    refresh() {
-      // this.dataList = [];
-      this.pageNo = 1;
-      this.pageSize = 10;
-      this.getDataList("refresh", () => {
-        this.$refs.page.finishRefresh();
-      });
-    },
+    refresh() {},
     handleChooseHeaderMenu(menuId) {
       this.activeHeaderMenu = menuId;
     },
