@@ -13,6 +13,7 @@
     "axios": "^0.26.1",
     "better-scroll": "^2.4.2",
     "core-js": "^3.8.3",
+    "esbuild": "^0.14.37",
     "fastclick": "^1.0.6",
     "node-sass": "^7.0.1",
     "sweetalert2": "^11.4.8",
