@@ -54,6 +54,14 @@
     <slider-ad :data="sliderData"></slider-ad>
     <standard-menu :data="standardMenuData"></standard-menu>
     <single-row-menu :data="singleRowMenuData"></single-row-menu>
+    <div class="component-list">
+      <div v-for="comp in componentList" :key="comp.componentId">
+        <double-column-menu
+          v-if="comp.componentType === 'double-column-menu'"
+          :data="comp.data"
+        ></double-column-menu>
+      </div>
+    </div>
   </ui-page>
 </template>
 
@@ -62,12 +70,14 @@
 import SliderAd from "../../components/slider";
 import StandardMenu from "../../components/menu/standardMenu";
 import SingleRowMenu from "../../components/menu/singleRowMenu";
+import DoubleColumnMenu from "../../components/menu/doubleColumnMenu";
 export default {
   name: "homePage",
-  components: { SliderAd, StandardMenu, SingleRowMenu },
+  components: { SliderAd, StandardMenu, SingleRowMenu, DoubleColumnMenu },
   data() {
     return {
       activeHeaderMenu: 1,
+      componentList: [],
       headerMenuList: [
         { menuId: 1, menuName: "关注" },
         { menuId: 2, menuName: "发现" },
@@ -149,9 +159,16 @@ export default {
       },
     };
   },
-  // mounted() {
-  //   this.getDataList();
-  // },
+  mounted() {
+    // this.getDataList();
+    this.$http({
+      url: "/component/all",
+      params: { page: "home" },
+    }).then((res) => {
+      // console.log(res);
+      this.componentList = res.data.list;
+    });
+  },
   methods: {
     refresh() {},
     handleChooseHeaderMenu(menuId) {
