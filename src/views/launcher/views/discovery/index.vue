@@ -6,7 +6,7 @@
     @refresh="refresh"
     ref="page"
     :header="{
-      barHeight: '1.6rem',
+      barHeight: '1.2rem',
     }"
     :threshold="90"
     :stop="40"
@@ -14,14 +14,18 @@
   >
     <template v-slot:header-bar>
       <header-bar
-        bar-height="1.6rem"
+        bar-height="1.2rem"
         :show-back="false"
         use-custom-title-text
         :bar-style="{ backgroundColor: 'transparent' }"
       >
         <template v-slot:header-left>
           <img
-            src="@/assets/images/love.png"
+            :src="
+              require(`@/assets/images/${
+                themeName === 'dark' ? 'night' : 'noon'
+              }.png`)
+            "
             class="header-left-logo"
             alt=""
             srcset=""
@@ -132,7 +136,25 @@ export default {
       getDataList,
     };
   },
+  data() {
+    return {
+      activeHeaderMenu: 1,
+      headerMenuList: [
+        { menuId: 1, menuName: "关注" },
+        { menuId: 2, menuName: "发现" },
+        { menuId: 3, menuName: "法兰西岛" },
+      ],
+    };
+  },
+  mounted() {
+    this.$nextTick(() => {
+      this.$refs.page.refreshScroll();
+    });
+  },
   methods: {
+    handleChooseHeaderMenu(menuId) {
+      this.activeHeaderMenu = menuId;
+    },
     loadmore() {
       this.pageNo++;
       this.getDataList("loadmore", () => {
@@ -147,8 +169,116 @@ export default {
         this.$refs.page.finishRefresh();
       });
     },
+    changeTheme() {
+      let theme = window.THEME.getActiveTheme();
+      if (theme.themeName === "default") {
+        window.THEME.applyTheme("dark");
+      } else {
+        window.THEME.applyTheme("default");
+      }
+      this.themeName = window.THEME.themeName;
+    },
   },
 };
 </script>
 
-<style></style>
+<style lang="scss">
+.header-left-logo {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto;
+  display: block;
+}
+.header-menu {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+  height: 100%;
+  width: 100%;
+  .header-menu-item {
+    font-size: var(--font-size-body);
+    font-weight: 300;
+    flex-grow: 1;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .active {
+    font-size: var(--font-size-large);
+    background-image: url(@/assets/images/header-menu-bg.png);
+    background-size: 48px 48px;
+    background-repeat: no-repeat;
+    background-position: center 70%;
+    font-weight: 600;
+  }
+}
+.article-list {
+  margin-top: 64px;
+  .article-list-item {
+    padding: 32px;
+    padding-bottom: 0;
+    background-color: var(--color-bg-primary);
+    margin-bottom: 32px;
+    .article-title {
+      font-size: var(--font-size-header);
+      font-weight: bold;
+      color: var(--color-text-primary);
+      margin-bottom: 8px;
+    }
+    .article-body {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      height: 200px;
+      overflow: hidden;
+      .article-body-left {
+        flex-grow: 1;
+        height: 200px;
+        .article-releaser {
+          display: flex;
+          flex-direction: row;
+          margin-bottom: 12px;
+          height: 40px;
+          align-items: center;
+          img {
+            width: 32px;
+            height: 32px;
+            margin-right: 24px;
+          }
+          span {
+            font-size: var(--font-size-body-sm);
+          }
+        }
+        .article-content {
+          font-size: var(--font-size-body);
+          height: 160px;
+        }
+      }
+      .article-body-poster {
+        min-width: 200px;
+        width: 200px;
+        height: 200px;
+        margin-left: 32px;
+        img {
+          width: 100%;
+          height: 100%;
+        }
+      }
+    }
+    .article-footer {
+      height: 60px;
+      line-height: 60px;
+      color: var(--color-text-sub);
+      .article-data {
+        font-size: var(--font-size-tip);
+      }
+    }
+  }
+}
+.theme-dark .article-list-item {
+  margin-bottom: 0;
+  border-bottom: 1px solid var(--color-border-primary);
+}
+</style>

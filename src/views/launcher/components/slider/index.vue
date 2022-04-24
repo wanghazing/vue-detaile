@@ -5,7 +5,6 @@
     :style="{
       marginLeft: data.adStyle.marginLR,
       marginRight: data.adStyle.marginLR,
-      marginBottom: data.adStyle.marginB,
       width: data.adStyle.width,
       height: data.adStyle.height,
       borderRadius: data.adStyle.borderRadius,

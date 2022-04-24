@@ -1,5 +1,5 @@
 <template>
-  <div class="ui-page-container">
+  <div class="ui-page-container" :style="{ ...page.style }">
     <header-bar
       v-if="!useCustomHeader"
       @back="handleLeftClick"
@@ -108,6 +108,10 @@ export default {
       default: () => {
         return {};
       },
+    },
+    page: {
+      type: Object,
+      default: () => ({ style: {} }),
     },
     pullDownTip: {
       type: Object,

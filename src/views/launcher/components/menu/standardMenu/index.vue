@@ -10,7 +10,6 @@
     :style="{
       marginLeft: data.style.marginLR,
       marginRight: data.style.marginLR,
-      marginBottom: data.style.marginB,
       width: data.style.width,
       height: data.style.height,
       borderRadius: data.style.borderRadius,

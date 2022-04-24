@@ -4,6 +4,8 @@ import demo from "./demo";
 
 import Launcher from "@/views/launcher";
 import Home from "@/views/launcher/views/home";
+import Discovery from "@/views/launcher/views/discovery";
+import Message from "@/views/launcher/views/message";
 const routes = [
   {
     path: "/",
@@ -33,7 +35,7 @@ const routes = [
       {
         path: "discovery",
         name: "discovery",
-        component: Home,
+        component: Discovery,
         meta: {
           title: "发现",
           order: 2,
@@ -42,9 +44,9 @@ const routes = [
         },
       },
       {
-        path: "direct",
-        name: "direct",
-        component: Home,
+        path: "message",
+        name: "message",
+        component: Message,
         meta: {
           title: "待办",
           order: 3,

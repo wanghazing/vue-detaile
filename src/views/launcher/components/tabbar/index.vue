@@ -35,16 +35,16 @@ export default {
     };
   },
   created() {
+    this.activeMenuId = this.$route.name;
     const Launcher = this.$router.options.routes.find(
       ({ name }) => name === "launcher"
     );
-    console.log(Launcher);
     if (Launcher && Launcher.children && Launcher.children.length) {
       this.menuList = Launcher.children.map((child) => {
-        console.log(child.meta.isDefault);
-        if (child.meta.isDefault) {
-          this.activeMenuId = child.name;
-        }
+        // console.log(child.meta.isDefault);
+        // if (child.meta.isDefault) {
+        //   this.activeMenuId = child.name;
+        // }
         return {
           name: child.name,
           path: child.path,

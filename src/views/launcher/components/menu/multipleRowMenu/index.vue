@@ -14,7 +14,7 @@
   >
     <div
       class="cols-item"
-      v-for="(col, index) in cols"
+      v-for="(col, index) in menuList"
       :key="index"
       :style="{ width: stdWidth }"
     >
@@ -26,7 +26,7 @@
           height: row.rowHeight,
           padding: data.padding,
           borderRadius: data.borderRadius,
-          marginBottom: idx === col.length - 1 ? 0 : data.margin,
+          marginBottom: idx === col.length - 1 ? 0 : data.padding,
           backgroundColor: row.backgroundColor,
           backgroundImage:
             'url(' +
@@ -88,7 +88,7 @@ export default {
       str: "",
       stdWidth: 0,
       stdPadding: 0,
-      cols: [],
+      menuList: [],
     };
   },
   props: {
@@ -111,8 +111,7 @@ export default {
       (window.screen.width - 2 * marginPX - marginPX * (columns - 1)) /
         columns +
       "px";
-    let cols = [];
-    this.data.items.forEach((item) => {
+    this.menuList = this.data.items.forEach((item) => {
       let it = { ...item };
       (it.texts || "")
         .split(",")
@@ -126,14 +125,8 @@ export default {
             it.textList = [{ ...text }];
           }
         });
-      if (cols[it.col - 1]) {
-        cols[it.col - 1].push(it);
-      } else {
-        cols[it.col - 1] = [it];
-      }
+      return it;
     });
-    this.cols = cols;
-    console.log(columns, marginPX, this.cols);
   },
 };
 </script>
@@ -146,7 +139,6 @@ export default {
   justify-content: space-between;
   .rows-item {
     background-repeat: no-repeat;
-    box-sizing: border-box;
     background-size: 100% 100%;
   }
 }
