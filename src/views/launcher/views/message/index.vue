@@ -14,7 +14,7 @@
         use-custom-title-text
         leftWidth="2rem"
         rightWidth="1.4rem"
-        :bar-style="{ backgroundColor: 'var(--color-primary)' }"
+        :bar-style="{ backgroundColor: 'var(--page-message-header-bg)' }"
       >
         <template v-slot:header-left>
           <p class="title-context-left">消息(32)</p>
@@ -38,7 +38,11 @@
       <div class="message-search-bar-input"></div>
     </div>
     <div class="message-list">
-      <div class="message-box" v-for="msg in messageList" :key="msg.id">
+      <div
+        class="message-box"
+        v-for="(msg, $index) in messageList"
+        :key="msg.id"
+      >
         <div class="message-box-avatar">
           <img
             alt=""
@@ -46,7 +50,10 @@
             srcset=""
           />
         </div>
-        <div class="message-box-content">
+        <div
+          class="message-box-content"
+          :class="{ 'no-border': $index === messageList.length - 1 }"
+        >
           <div class="message-box-line">
             <div class="message-box-title-text">{{ msg.title }}</div>
             <div class="message-box-date-text">{{ msg.date }}</div>
@@ -83,6 +90,7 @@ export default {
 
 <style lang="scss">
 .page-message {
+  --page-message-header-bg: var(--color-primary);
   .title-context-left {
     color: var(--color-text-reverse);
     font-size: var(--font-size-header);
@@ -97,7 +105,7 @@ export default {
     margin-right: 30px;
   }
   .message-search-bar {
-    background-color: var(--color-primary);
+    background-color: var(--page-message-header-bg);
     height: 100px;
     padding: 20px 30px;
     padding-bottom: 0;
@@ -156,6 +164,20 @@ export default {
           margin-bottom: 0;
         }
       }
+      .no-border {
+        border-bottom: none;
+      }
+    }
+  }
+}
+.theme-dark {
+  .page-message {
+    --page-message-header-bg: --color-bg-sub;
+    .title-context-left {
+      color: var(--color-text-primary);
+    }
+    .title-context-right {
+      color: var(--color-text-primary);
     }
   }
 }

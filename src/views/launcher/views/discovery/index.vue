@@ -20,17 +20,36 @@
         :bar-style="{ backgroundColor: 'transparent' }"
       >
         <template v-slot:header-left>
-          <img
-            :src="
-              require(`@/assets/images/${
-                themeName === 'dark' ? 'night' : 'noon'
-              }.png`)
-            "
-            class="header-left-logo"
-            alt=""
-            srcset=""
-            @click="changeTheme"
-          />
+          <div
+            :style="{
+              height: '.48rem',
+              overflow: 'hidden',
+            }"
+          >
+            <div
+              :style="{
+                transition: 'all .7s ease',
+                transform: `translateY(${
+                  themeName === 'dark' ? '0' : '-0.48rem'
+                })`,
+              }"
+            >
+              <img
+                :src="require(`@/assets/images/night.png`)"
+                class="header-left-logo"
+                alt=""
+                srcset=""
+                @click="changeTheme"
+              />
+              <img
+                :src="require(`@/assets/images/noon.png`)"
+                class="header-left-logo"
+                alt=""
+                srcset=""
+                @click="changeTheme"
+              />
+            </div>
+          </div>
         </template>
         <div class="header-menu">
           <div
@@ -95,50 +114,53 @@
 </template>
 
 <script>
-import { ref, onMounted } from "vue";
 export default {
   name: "discoveryPage",
-  setup() {
-    const pageNo = ref(1);
-    const pageSize = ref(10);
-    const dataList = ref([]);
-    const getDataList = (flag, cb) => {
-      setTimeout(() => {
-        const argv = [
-          [0, dataList.value.length],
-          [dataList.value.length, 0],
-        ][0 | (flag === "loadmore")];
-        console.log(pageSize.value, pageNo.value);
-        dataList.value.splice(
-          ...argv,
-          ...[...Array(pageSize.value).keys()].map((idx) => {
-            return {
-              id: pageSize.value * pageNo.value + idx,
-              icon: "logo" + ~~(Math.random() * 10 + 1),
-              poster: "post" + ~~(Math.random() * 8 + 1),
-              title: window.getRandomCnWord(10, 25),
-              releaser: window.getRandomCnWord(2, 8),
-              content: window.getRandomCnWord(20, 80),
-              content2: window.getRandomCnWord(4, 8),
-              follow: ~~(Math.random() * 300),
-              view: ~~(Math.random() * 4000),
-            };
-          })
-        );
-        cb && cb();
-      }, 1000);
-    };
-    onMounted(getDataList);
-    return {
-      pageNo,
-      pageSize,
-      dataList,
-      getDataList,
-    };
-  },
+  // setup() {
+  //   const pageNo = ref(1);
+  //   const pageSize = ref(10);
+  //   const dataList = ref([]);
+  //   const getDataList = (flag, cb) => {
+  //     setTimeout(() => {
+  //       const argv = [
+  //         [0, dataList.value.length],
+  //         [dataList.value.length, 0],
+  //       ][0 | (flag === "loadmore")];
+  //       console.log(pageSize.value, pageNo.value);
+  //       dataList.value.splice(
+  //         ...argv,
+  //         ...[...Array(pageSize.value).keys()].map((idx) => {
+  //           return {
+  //             id: pageSize.value * pageNo.value + idx,
+  //             icon: "logo" + ~~(Math.random() * 10 + 1),
+  //             poster: "post" + ~~(Math.random() * 8 + 1),
+  //             title: window.getRandomCnWord(10, 25),
+  //             releaser: window.getRandomCnWord(2, 8),
+  //             content: window.getRandomCnWord(20, 80),
+  //             content2: window.getRandomCnWord(4, 8),
+  //             follow: ~~(Math.random() * 300),
+  //             view: ~~(Math.random() * 4000),
+  //           };
+  //         })
+  //       );
+  //       cb && cb();
+  //     }, 1000);
+  //   };
+  //   onMounted(getDataList);
+  //   return {
+  //     pageNo,
+  //     pageSize,
+  //     dataList,
+  //     getDataList,
+  //   };
+  // },
   data() {
     return {
+      pageNo: 1,
+      pageSize: 10,
+      dataList: [],
       activeHeaderMenu: 1,
+      themeName: "",
       headerMenuList: [
         { menuId: 1, menuName: "关注" },
         { menuId: 2, menuName: "发现" },
@@ -146,12 +168,45 @@ export default {
       ],
     };
   },
+  created() {
+    this.themeName = window.THEME.themeName;
+  },
   mounted() {
-    this.$nextTick(() => {
-      this.$refs.page.refreshScroll();
-    });
+    // this.$nextTick(() => {
+    //   this.$refs.page.refreshScroll();
+    // });
+    this.getDataList();
   },
   methods: {
+    getDataList(flag, cb) {
+      setTimeout(() => {
+        const argv = [
+          [0, this.dataList.length],
+          [this.dataList.length, 0],
+        ][0 | (flag === "loadmore")];
+        // console.log(pageSize, pageNo);
+        this.dataList.splice(
+          ...argv,
+          ...[...Array(this.pageSize).keys()].map((idx) => {
+            return {
+              id: this.pageSize * this.pageNo + idx,
+              icon: "logo" + ~~(Math.random() * 10 + 1),
+              poster: "post" + ~~(Math.random() * 8 + 1),
+              title: window.getRandomCnWord(10, 25),
+              releaser: window.getRandomCnWord(2, 8),
+              content: window.getRandomCnWord(20, 40),
+              content2: window.getRandomCnWord(4, 8),
+              follow: ~~(Math.random() * 300),
+              view: ~~(Math.random() * 4000),
+            };
+          })
+        );
+        this.$nextTick(() => {
+          this.$refs.page.refreshScroll();
+          cb && cb();
+        });
+      }, 1000);
+    },
     handleChooseHeaderMenu(menuId) {
       this.activeHeaderMenu = menuId;
     },
@@ -215,7 +270,7 @@ export default {
   }
 }
 .article-list {
-  margin-top: 64px;
+  margin-top: 48px;
   .article-list-item {
     padding: 32px;
     padding-bottom: 0;

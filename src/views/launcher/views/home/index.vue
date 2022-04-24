@@ -94,7 +94,6 @@ export default {
     };
   },
   mounted() {
-    this.themeName = window.THEME.themeName;
     // this.getDataList();
     this.$http({
       url: "/component/all",

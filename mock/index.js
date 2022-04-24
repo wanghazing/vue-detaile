@@ -1,4 +1,5 @@
 import { getAllComponentsByPage } from "./data/components";
+import { login } from "./data/login";
 const Mock = require("mockjs");
 
 Mock.mock("/article/list", () => {
@@ -19,3 +20,4 @@ Mock.mock("/article/error", () => {
 });
 
 Mock.mock(new RegExp("/component/all.*"), getAllComponentsByPage);
+Mock.mock("/login", login);

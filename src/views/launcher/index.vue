@@ -25,6 +25,7 @@ export default {
         { menuId: 2, menuName: "发现" },
         { menuId: 3, menuName: "法兰西岛" },
       ],
+      cacheComponents: ["home", "discovery", "message"],
     };
   },
   created() {

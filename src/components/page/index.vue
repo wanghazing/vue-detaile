@@ -33,7 +33,7 @@
           marginBottom: typeof bottom === 'number' ? bottom + 'px' : bottom,
         }"
       >
-        <div class="pulling-down" v-show="isSupportRefresh">
+        <div class="pulling-down" v-show="isSupportRefresh && pullDownState">
           <p>{{ pullDownTipText[pullDownState] }}</p>
         </div>
         <div>
@@ -241,6 +241,9 @@ export default {
       this.uiScroller.finishPullDown();
       this.$nextTick(() => {
         this.uiScroller.refresh();
+        setTimeout(() => {
+          this.pullDownState = "";
+        }, 1500);
       });
     },
     finishLoadMore() {
